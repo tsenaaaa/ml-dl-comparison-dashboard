@@ -1,0 +1,21 @@
+STREAMLIT DEPLOY CHECKLIST
+
+[1] Extract ZIP
+[2] Upload ALL contents of ml_dl_comparison_dashboard_clean/ to GitHub
+[3] Confirm these paths exist in repo root:
+    app.py
+    requirements.txt
+    .streamlit/config.toml
+    data/
+    assets/
+[4] Streamlit entrypoint: app.py
+[5] No Secrets required
+[6] No GPU required
+[7] No Google Drive mount required
+[8] Deploy
+
+Expected top result:
+- Best overall by F1-Macro: CNN
+- Test F1-Macro: 0.7621
+- Test Accuracy: 0.8645
+- Best ML: Linear SVM
