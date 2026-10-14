@@ -1552,6 +1552,58 @@ if page == "Overview":
         ),
     )
 
+    # Dataset journey: counts are shown only for stages documented by the
+    # upstream pipeline. Intermediate preprocessing does not have a verified
+    # count in the dashboard metadata.
+    section(
+        "Perjalanan data penelitian",
+        "Ringkasan komentar dari hasil scraping hingga dataset yang digunakan untuk klasifikasi.",
+    )
+
+    journey = pd.DataFrame(
+        {
+            "Tahap": ["Raw comments", "Quality filtered", "Classification set"],
+            "Jumlah komentar": [122_282, 31_780, 19_443],
+            "Keterangan": [
+                "Komentar hasil scraping awal",
+                "Komentar lolos penyaringan kualitas",
+                "Dataset eksperimen model · 9 target",
+            ],
+        }
+    )
+    journey_cards = st.columns(3)
+    for col, (_, row) in zip(journey_cards, journey.iterrows()):
+        with col:
+            metric_card(
+                row["Tahap"],
+                f'{int(row["Jumlah komentar"]):,}'.replace(",", "."),
+                row["Keterangan"],
+                "blue" if row["Tahap"] == "Raw comments" else "mint" if row["Tahap"] == "Quality filtered" else "coral",
+            )
+
+    journey_fig = px.bar(
+        journey.sort_values("Jumlah komentar"),
+        x="Tahap",
+        y="Jumlah komentar",
+        text="Jumlah komentar",
+        color_discrete_sequence=["#B5122B"],
+        hover_data={"Keterangan": True, "Jumlah komentar": ":,"},
+    )
+    journey_fig.update_traces(texttemplate="%{text:,.0f}", textposition="outside")
+    journey_fig.update_layout(
+        showlegend=False,
+        height=360,
+        margin=dict(l=8, r=8, t=18, b=8),
+        xaxis_title=None,
+        yaxis_title="Jumlah komentar",
+        plot_bgcolor="white",
+        paper_bgcolor="white",
+        font=dict(color=COLORS["muted"]),
+        yaxis=dict(gridcolor="#E8EEF6", rangemode="tozero"),
+    )
+    st.plotly_chart(journey_fig, use_container_width=True, config={"displayModeBar": False})
+    st.caption("Tahap preprocessing dan pelabelan berada di antara penyaringan kualitas dan dataset klasifikasi; jumlah antara tahap tersebut tidak ditampilkan karena belum tersedia sebagai angka terverifikasi.")
+
 
     c1, c2, c3, c4 = st.columns(4)
 
